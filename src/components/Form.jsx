@@ -1,28 +1,49 @@
 import { useActionState } from "react"
 import { supabase } from "../supabaseClient"
-import { useAuth } from "../context/AuthContext"
 
 function Form({ metrics }) {
-  const { users } = useAuth()
+  const safeMetrics = metrics ?? []
 
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
       const submittedName = formData.get("name")
-      const user = users.find((u) => u.name === submittedName)
+      const value = Number(formData.get("value"))
 
-      const newDeal = {
-        user_id: user.id,
-        value: formData.get("value"),
+      if (!submittedName || value <= 0) {
+        return new Error("Please select a person and enter a valid amount")
       }
 
-      console.log("newDeal", newDeal)
+      const selectedMetric = safeMetrics.find(
+        (metric) => metric.name === submittedName
+      )
+
+      if (!selectedMetric) {
+        return new Error("Selected person was not found")
+      }
+
+      const userId =
+        selectedMetric.user_id ??
+        selectedMetric.id ??
+        selectedMetric.userId
+
+      if (!userId) {
+        console.error("Selected metric does not contain a user id:", selectedMetric)
+        return new Error("Selected person does not have a user id")
+      }
+
+      const newDeal = {
+        user_id: userId,
+        value,
+      }
 
       const { error } = await supabase.from("sales_deals").insert(newDeal)
 
       if (error) {
-        console.error("Error adding deal: ", error.message)
+        console.error("Error adding deal:", error.message)
         return new Error("Failed to add deal")
       }
+
+      window.location.reload()
 
       return null
     },
@@ -30,9 +51,9 @@ function Form({ metrics }) {
   )
 
   const generateOptions = () => {
-    return users.map((user) => (
-      <option key={user.id} value={user.name}>
-        {user.name}
+    return safeMetrics.map((metric) => (
+      <option key={metric.name} value={metric.name}>
+        {metric.name}
       </option>
     ))
   }
