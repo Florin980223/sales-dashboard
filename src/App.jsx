@@ -160,7 +160,7 @@ Total Sales Dashboard Live ($)
             onChange={(e) => setAmount(e.target.value)}
           />
 
-<button type="submit">Add New Deal</button>
+<button type="submit">Create Deal</button>
         </form>
 
         <form onSubmit={handleAddPerson} className="person-form">
