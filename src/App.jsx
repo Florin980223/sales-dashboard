@@ -123,7 +123,7 @@ function App() {
 
   return (
     <main className="page">
-      <h1>Total Sales Dashboard - Git Practice</h1>
+      <h1>Total Sales Dashboard - Git Practice1223git </h1>
 
       <section className="chart-card">
         <div className="chart-wrapper">
