@@ -123,8 +123,7 @@ function App() {
 
   return (
     <main className="page">
-      <h1>Total Sales Dashboard - Git Practice1223git </h1>
-
+Total Sales Dashboard Live ($)
       <section className="chart-card">
         <div className="chart-wrapper">
           <ResponsiveContainer width="100%" height="100%">
@@ -161,7 +160,7 @@ function App() {
             onChange={(e) => setAmount(e.target.value)}
           />
 
-          <button type="submit">Add Deal</button>
+<button type="submit">Add New Deal</button>
         </form>
 
         <form onSubmit={handleAddPerson} className="person-form">
