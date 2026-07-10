@@ -123,7 +123,7 @@ function App() {
 
   return (
     <main className="page">
-      <h1>Total Sales This Quarter ($)</h1>
+      <h1>Total Sales Dashboard ($) ($)</h1>
 
       <section className="chart-card">
         <div className="chart-wrapper">
