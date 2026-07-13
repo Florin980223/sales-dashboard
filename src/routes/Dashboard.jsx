@@ -119,26 +119,28 @@ const Dashboard = () => {
   }
 
   return (
-    <main>
-      <section className="dashboard-card">
-        <h2>Total Sales This Quarter ($)</h2>
+    <main className="dashboard-page">
+      <div className="dashboard-container">
+        <section className="chart-card">
+          <h2 className="card-title">Total Sales This Quarter ($)</h2>
 
-        <div className="chart-container">
-          <div className="chart-y-axis">
-            <span>12,000</span>
-            <span>10,000</span>
-            <span>8,000</span>
-            <span>6,000</span>
-            <span>4,000</span>
-            <span>2,000</span>
-            <span>0</span>
+          <div className="chart-container">
+            <div className="chart-y-axis">
+              <span>12,000</span>
+              <span>10,000</span>
+              <span>8,000</span>
+              <span>6,000</span>
+              <span>4,000</span>
+              <span>2,000</span>
+              <span>0</span>
+            </div>
+
+            <div className="chart-bars">{generateBars()}</div>
           </div>
-
-          <div className="chart-bars">{generateBars()}</div>
-        </div>
+        </section>
 
         <Form salesReps={salesReps} />
-      </section>
+      </div>
     </main>
   )
 }

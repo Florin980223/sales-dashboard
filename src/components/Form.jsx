@@ -40,28 +40,79 @@ function Form({ salesReps }) {
     ))
   }
 
+  const [personError, personSubmitAction, isPersonPending] = useActionState(
+    async (previousState, formData) => {
+      const name = (formData.get("person-name") || "").trim()
+
+      if (!name) {
+        return new Error("Please enter a name")
+      }
+
+      const { error } = await supabase.from("sales_reps").insert({ name })
+
+      if (error) {
+        console.error("Error adding person:", error.message)
+        return new Error("Failed to add person")
+      }
+
+      window.location.reload()
+
+      return null
+    },
+    null
+  )
+
   return (
-    <form action={submitAction}>
-      <label htmlFor="name">Name: </label>
+    <div className="forms-grid">
+      <div className="form-card">
+        <h3 className="form-card-title">Add Deal</h3>
 
-      <select id="name" name="name" disabled={isPending}>
-        {generateOptions()}
-      </select>
+        <form action={submitAction} className="modern-form">
+          <div className="field">
+            <label htmlFor="name">Name</label>
+            <select id="name" name="name" disabled={isPending}>
+              {generateOptions()}
+            </select>
+          </div>
 
-      <label htmlFor="value">Amount: $</label>
+          <div className="field">
+            <label htmlFor="value">Amount ($)</label>
+            <input
+              id="value"
+              name="value"
+              type="number"
+              defaultValue="0"
+              disabled={isPending}
+            />
+          </div>
 
-      <input
-        id="value"
-        name="value"
-        type="number"
-        defaultValue="0"
-        disabled={isPending}
-      />
+          <button disabled={isPending}>Add Deal</button>
 
-      <button disabled={isPending}>Add Deal</button>
+          {error && <p className="form-error">{error.message}</p>}
+        </form>
+      </div>
 
-      {error && <p>{error.message}</p>}
-    </form>
+      <div className="form-card">
+        <h3 className="form-card-title">Add Person</h3>
+
+        <form action={personSubmitAction} className="modern-form">
+          <div className="field">
+            <label htmlFor="person-name">Name</label>
+            <input
+              id="person-name"
+              name="person-name"
+              type="text"
+              placeholder="e.g. Jim"
+              disabled={isPersonPending}
+            />
+          </div>
+
+          <button disabled={isPersonPending}>Add Person</button>
+
+          {personError && <p className="form-error">{personError.message}</p>}
+        </form>
+      </div>
+    </div>
   )
 }
 
