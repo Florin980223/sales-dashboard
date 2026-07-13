@@ -1,38 +1,20 @@
 import { useActionState } from "react"
 import { supabase } from "../supabaseClient"
 
-function Form({ metrics }) {
-  const safeMetrics = metrics ?? []
+function Form({ salesReps }) {
+  const safeSalesReps = salesReps ?? []
 
   const [error, submitAction, isPending] = useActionState(
     async (previousState, formData) => {
-      const submittedName = formData.get("name")
+      const salesRepId = formData.get("name")
       const value = Number(formData.get("value"))
 
-      if (!submittedName || value <= 0) {
+      if (!salesRepId || value <= 0) {
         return new Error("Please select a person and enter a valid amount")
       }
 
-      const selectedMetric = safeMetrics.find(
-        (metric) => metric.name === submittedName
-      )
-
-      if (!selectedMetric) {
-        return new Error("Selected person was not found")
-      }
-
-      const userId =
-        selectedMetric.user_id ??
-        selectedMetric.id ??
-        selectedMetric.userId
-
-      if (!userId) {
-        console.error("Selected metric does not contain a user id:", selectedMetric)
-        return new Error("Selected person does not have a user id")
-      }
-
       const newDeal = {
-        user_id: userId,
+        sales_rep_id: salesRepId,
         value,
       }
 
@@ -51,9 +33,9 @@ function Form({ metrics }) {
   )
 
   const generateOptions = () => {
-    return safeMetrics.map((metric) => (
-      <option key={metric.name} value={metric.name}>
-        {metric.name}
+    return safeSalesReps.map((rep) => (
+      <option key={rep.id} value={rep.id}>
+        {rep.name}
       </option>
     ))
   }

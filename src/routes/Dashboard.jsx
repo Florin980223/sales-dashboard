@@ -4,9 +4,11 @@ import Form from "../components/Form"
 
 const Dashboard = () => {
   const [metrics, setMetrics] = useState([])
+  const [salesReps, setSalesReps] = useState([])
 
   useEffect(() => {
     fetchMetrics()
+    fetchSalesReps()
 
     const channel = supabase
       .channel("sales-deals-changes")
@@ -37,11 +39,10 @@ const Dashboard = () => {
           id,
           name,
           value,
-          user_id,
-          user_profiles (
+          sales_rep_id,
+          sales_reps (
             id,
-            name,
-            account_type
+            name
           )
         `)
 
@@ -50,7 +51,7 @@ const Dashboard = () => {
       }
 
       const totals = data.reduce((acc, deal) => {
-        const displayName = deal.user_profiles?.name || deal.name
+        const displayName = deal.sales_reps?.name || deal.name
 
         if (!displayName) {
           return acc
@@ -76,6 +77,22 @@ const Dashboard = () => {
       setMetrics(totals)
     } catch (error) {
       console.error("Error fetching metrics:", error.message)
+    }
+  }
+
+  const fetchSalesReps = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("sales_reps")
+        .select("id, name")
+
+      if (error) {
+        throw error
+      }
+
+      setSalesReps(data ?? [])
+    } catch (error) {
+      console.error("Error fetching sales reps:", error.message)
     }
   }
 
@@ -120,7 +137,7 @@ const Dashboard = () => {
           <div className="chart-bars">{generateBars()}</div>
         </div>
 
-        <Form metrics={metrics} />
+        <Form salesReps={salesReps} />
       </section>
     </main>
   )
